@@ -21,7 +21,7 @@ const userController = {
             if(!userExists) return res.status(404).json({ message: "User account does not exist, please register your account"});
             if( userExists && (await userExists.matchPassword(password))){
                 await generateToken(res, userExists._id);
-                return res.status(200).json({ message: "User authenticated successfully" })
+                return res.status(200).json({ message: "User authenticated successfully", data: userExists })
             }else{
                 return res.status(401).json({ message: "Invalid credentials" });
             }
