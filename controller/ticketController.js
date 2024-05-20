@@ -1,11 +1,14 @@
 const Ticket = require("../model/ticketModel");
+const User = require('../model/userModel');
 
 const ticketController = {
     createTicket: async (req, res) => {
         try {
             const userId = req.user._id;
             const { title, description } = req.body;
-            const response = await Ticket.create({title, description, createdBy: userId});
+            const user = await User.findById(userId);
+            const response = await Ticket.create(
+                {title, description, createdBy: userId, requestor: user.name, requestorEmail: user.username, assignee: ''});
             res.status(201).json({ message: "Ticket logged successfully", data: response})
         } catch (error) {
             res.status(500).json({ message: "Internal server error", error });
@@ -40,6 +43,21 @@ const ticketController = {
     updateTicket: async (req, res) => {
         try {
             const ticketId = req.params.ticketId;
+            const currentUser = req.user;
+            const {status, assignee, requestorEmail} = req.body;
+            //Requestor can resolve it without assignee but others cannot
+            if(status === 'Resolved' && requestorEmail !== currentUser.username){
+                if(assignee === ''){
+                    return res.json({message: "While resolving the ticket updating assignee is mandatory, please assign it to yourself and resolve it."})
+                }  
+            }
+            if(assignee !== ''){
+                const checkValidAssignee = await User.findOne({username: assignee});
+                if(!checkValidAssignee) return res.json({message: "Assignee is not a valid email, please enter your assignee email correctly"})
+                else if(!checkValidAssignee.isAdmin){
+                    return res.json({message: "Assignee should be an admin, you cannot assign a ticket to the user(non-admin)"})
+                }
+            }
             const response = await Ticket.findByIdAndUpdate(ticketId, req.body, {new: true});
             res.status(200).json({ message: "Ticket updated successfully", data: response });
         } catch (error) {

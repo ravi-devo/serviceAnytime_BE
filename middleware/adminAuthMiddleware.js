@@ -3,7 +3,7 @@ const User = require('../model/userModel');
 
 const adminAuthMiddleware = async (req, res, next) => {
     try {
-        const token = req.cookies.jwt;
+        const token = req.cookies.jwt || req.headers.authorization.split(' ')[1];
         if(token){
             try {
                 const decoded = jwt.verify(token, process.env.JWT_KEY);
@@ -17,7 +17,7 @@ const adminAuthMiddleware = async (req, res, next) => {
             res.status(401).json({ message: "You are not authorized to access this resource, no token"});
         }
     } catch (error) {
-        res.status(401).json({ message: "Internal server error"});
+        res.status(401).json({ message: "Authorization error"});
     }
 }
 

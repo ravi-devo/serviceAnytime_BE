@@ -1,6 +1,14 @@
 const mongoose = require('mongoose');
 
 const ticketSchema = mongoose.Schema({
+    requestor: {
+        type: String,
+        required: true
+    },
+    requestorEmail: {
+        type: String,
+        required: true
+    },
     title: {
         type: String,
         required: true
@@ -11,7 +19,7 @@ const ticketSchema = mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['Open', 'In Progress', 'Resolved'],
+        enum: ['Open', 'In-Progress', 'Resolved'],
         default: 'Open'
     },
     priority: {
@@ -21,8 +29,8 @@ const ticketSchema = mongoose.Schema({
     },
     assignmentGroup: {
         type: String,
-        enum: ['General Support', 'Identity Access Management', 'HR Operations', 'End User Support'],
-        default: 'General Support'
+        enum: ['General-Support', 'Identity-Access-Management', 'HR-Operations', 'End-User-Support'],
+        default: 'General-Support'
     },
     assignee: {
         type: String

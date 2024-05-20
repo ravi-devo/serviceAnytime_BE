@@ -9,7 +9,7 @@ router.post('/createTicket', authMiddleware, ticketController.createTicket);
 router.get('/allTickets', adminAuthMiddleware, ticketController.getAllTickets);
 router.get('/currentUser', authMiddleware, ticketController.getUserSpecificTicket);
 router.get('/:id', authMiddleware, ticketController.getSpecificTicket);
-router.patch('/:ticketId', authMiddleware, ticketController.updateTicket);
+router.put('/:ticketId', authMiddleware, ticketController.updateTicket);
 router.delete('/:ticketId', adminAuthMiddleware, ticketController.deleteTicket);
 
 module.exports = router;
